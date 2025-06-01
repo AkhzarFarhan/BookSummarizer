@@ -1,0 +1,72 @@
+# requirements.txt
+PyPDF2==3.0.1
+google-generativeai==0.3.2
+python-dotenv==1.0.0
+pathlib
+typing
+dataclasses
+json
+re
+time
+os
+
+# Alternative PDF libraries (choose one based on your needs):
+# pymupdf==1.23.14  # Very fast and reliable
+# pdfplumber==0.10.3  # Great for complex layouts
+# pypdf==3.17.4  # Newer version of PyPDF2
+
+# setup.py
+from setuptools import setup, find_packages
+
+setup(
+    name="pdf-chapter-summarizer",
+    version="1.0.0",
+    packages=find_packages(),
+    install_requires=[
+        "PyPDF2>=3.0.1",
+        "google-generativeai>=0.3.2",
+        "python-dotenv>=1.0.0",
+    ],
+    author="Your Name",
+    author_email="your.email@example.com",
+    description="A tool to extract and summarize chapters from PDF books using AI",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    url="https://github.com/yourusername/pdf-chapter-summarizer",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.7",
+)
+
+# .env.example
+GEMINI_API_KEY=your_gemini_api_key_here
+DEFAULT_OUTPUT_DIR=./outputs/
+DEFAULT_CHUNK_SIZE=30000
+
+# config.py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class Config:
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+    DEFAULT_OUTPUT_DIR = os.getenv('DEFAULT_OUTPUT_DIR', './outputs/')
+    DEFAULT_CHUNK_SIZE = int(os.getenv('DEFAULT_CHUNK_SIZE', 30000))
+    
+    # Rate limiting settings
+    API_DELAY = 2  # seconds between API calls
+    MAX_RETRIES = 3
+    
+    # Chapter detection patterns
+    CHAPTER_PATTERNS = [
+        r'^\s*chapter\s+\d+',
+        r'^\s*ch\s*\.\s*\d+',
+        r'^\s*\d+\s*\.\s*[A-Z]',
+        r'^\s*part\s+\d+',
+        r'^\s*section\s+\d+',
+        r'^\s*[IVX]+\s*\.\s*[A-Z]',
+    ]
